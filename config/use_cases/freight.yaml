@@ -1,0 +1,38 @@
+# Freight Contracts vs. Carrier Bills audit profile (starter — tune columns to your carrier's format)
+use_case: freight
+display_name: "Freight Contract vs. Carrier Bill"
+domain_label: "contracted freight rates and accessorial charges"
+recipient_role: "Carrier Billing Department"
+response_deadline_days: 30
+dispute_template: dispute_letter.md.j2
+
+match_keys:
+  - item_code
+
+tolerance:
+  pct_tolerance: "1.00"
+  abs_tolerance: "10.00"
+  review_band_multiplier: "3"
+
+contract_columns:
+  "Lane ID": item_code
+  "Service Type": category
+  "Description": description
+  "Contract Rate": agreed_rate
+  "Quantity": quantity
+  "Contract Amount": agreed_amount
+  "Rate Cap": cap_amount
+  "Period Start": billing_period_start
+  "Period End": billing_period_end
+  "Contract Clause": contract_clause
+
+invoice_columns:
+  "Lane ID": item_code
+  "Service Type": category
+  "Description": description
+  "Billed Rate": billed_rate
+  "Quantity": quantity
+  "Billed Amount": billed_amount
+  "Period Start": billing_period_start
+  "Period End": billing_period_end
+  "Pro Number": invoice_ref

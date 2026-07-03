@@ -1,0 +1,38 @@
+# SaaS Contract Terms vs. Vendor Invoices audit profile (starter — tune columns to your vendor's format)
+use_case: saas
+display_name: "SaaS Contract vs. Vendor Invoice"
+domain_label: "contracted subscription and usage fees"
+recipient_role: "Vendor Accounts Receivable"
+response_deadline_days: 30
+dispute_template: dispute_letter.md.j2
+
+match_keys:
+  - item_code
+
+tolerance:
+  pct_tolerance: "0.00"
+  abs_tolerance: "1.00"
+  review_band_multiplier: "3"
+
+contract_columns:
+  "SKU": item_code
+  "Product Line": category
+  "Description": description
+  "Unit Price": agreed_rate
+  "Seats": quantity
+  "Contract Amount": agreed_amount
+  "Spend Cap": cap_amount
+  "Term Start": billing_period_start
+  "Term End": billing_period_end
+  "Order Form Section": contract_clause
+
+invoice_columns:
+  "SKU": item_code
+  "Product Line": category
+  "Description": description
+  "Unit Price": billed_rate
+  "Seats": quantity
+  "Billed Amount": billed_amount
+  "Term Start": billing_period_start
+  "Term End": billing_period_end
+  "Invoice Number": invoice_ref

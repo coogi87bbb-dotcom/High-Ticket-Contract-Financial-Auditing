@@ -1,0 +1,38 @@
+# Corporate Expense Policy vs. Employee Receipts audit profile (starter — tune columns to your expense system's export)
+use_case: expense
+display_name: "Expense Policy vs. Employee Receipts"
+domain_label: "policy expense limits"
+recipient_role: "Employee / Expense Administrator"
+response_deadline_days: 14
+dispute_template: dispute_letter.md.j2
+
+match_keys:
+  - item_code
+
+tolerance:
+  pct_tolerance: "0.00"
+  abs_tolerance: "0.00"
+  review_band_multiplier: "2"
+
+contract_columns:
+  "Policy Code": item_code
+  "Expense Type": category
+  "Description": description
+  "Per-Unit Limit": agreed_rate
+  "Units": quantity
+  "Policy Limit": agreed_amount
+  "Hard Cap": cap_amount
+  "Period Start": billing_period_start
+  "Period End": billing_period_end
+  "Policy Section": contract_clause
+
+invoice_columns:
+  "Policy Code": item_code
+  "Expense Type": category
+  "Description": description
+  "Unit Cost": billed_rate
+  "Units": quantity
+  "Receipt Amount": billed_amount
+  "Period Start": billing_period_start
+  "Period End": billing_period_end
+  "Receipt ID": invoice_ref

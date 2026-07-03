@@ -1,0 +1,11 @@
+Item Code,Expense Category,Description,Agreed Rate,Quantity,Agreed Amount,Annual Cap,Period Start,Period End,Lease Clause
+CAM-001,Grounds,Landscaping Services,1000.00,1,1000.00,,2026-01-01,2026-12-31,Section 4.2(a)
+CAM-002,Administration,Property Management Admin Fee,1000.00,1,1000.00,,2026-01-01,2026-12-31,Section 4.3
+CAM-003,Security,Security Patrol Services,2400.00,1,2400.00,2500.00,2026-01-01,2026-12-31,Section 4.2(c)
+CAM-004,Grounds,Snow Removal,200.00,4,800.00,,2026-01-01,2026-12-31,Section 4.2(b)
+CAM-005,Janitorial,Common Area Janitorial,1800.00,1,1800.00,,2026-01-01,2026-12-31,Section 4.2(d)
+CAM-006,Maintenance,Elevator Maintenance,650.00,1,650.00,,2026-01-01,2026-12-31,Section 4.2(e)
+CAM-007,Maintenance,Parking Lot Maintenance,1200.00,1,1200.00,,2026-01-01,2026-12-31,Section 4.2(f)
+CAM-008,Insurance,Property Insurance Allocation,3000.00,1,3000.00,,2026-01-01,2026-12-31,Section 4.4
+CAM-009,Utilities,Common Area Trash Removal,500.00,1,500.00,,2026-01-01,2026-12-31,Section 4.2(g)
+CAM-010,Maintenance,Window Cleaning,400.00,1,400.00,,2026-01-01,2026-12-31,Section 4.2(h)

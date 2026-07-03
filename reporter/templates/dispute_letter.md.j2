@@ -1,0 +1,84 @@
+# {{ legal.legal_header }}
+
+**Date:** {{ today }}
+**To:** {{ profile.recipient_role }}
+**Re:** Disputed {{ profile.domain_label }} — Audit Reference {{ result.audit_id }}
+**Governing framework:** {{ legal.display_name }}
+
+Dear {{ profile.recipient_role }},
+
+Following a detailed reconciliation of the referenced billing against the governing
+agreement ({{ profile.display_name }}), and pursuant to {{ legal.statutory_reference }},
+we have identified the following charges that exceed the contractually agreed amounts.
+Each figure below was computed with exact decimal arithmetic against the source
+documents; the full mathematical lineage appears in the Evidence Appendix.
+
+## Disputed Line Items
+
+| # | Item | Description | Contract Reference | Agreed | Billed | Overcharge |
+|---|------|-------------|--------------------|-------:|-------:|-----------:|
+{% for f in findings -%}
+| {{ loop.index }} | {{ f.item_code }} | {{ f.description }} | {{ f.contract_clause or "—" }} | ${{ f.agreed_amount }} | ${{ f.billed_amount }} | **${{ f.variance_amount }}** |
+{% endfor %}
+
+{% for f in findings -%}
+{{ loop.index }}. **{{ f.item_code }} — {{ f.description }}**{% if f.invoice_ref %} (Invoice ref: {{ f.invoice_ref }}){% endif %}: {{ f.explanation }}
+{% endfor %}
+
+{% if unmatched_invoice -%}
+## Charges With No Contractual Basis
+
+The following billed items could not be matched to any provision of the agreement and
+require substantiation or removal:
+
+{% for i in unmatched_invoice -%}
+- **{{ i.item_code }} — {{ i.description }}**: ${{ i.billed_amount }}{% if i.invoice_ref %} (Invoice ref: {{ i.invoice_ref }}){% endif %}
+{% endfor %}
+{% endif %}
+
+## Demand
+
+We hereby dispute the charges itemized above and request a corrected statement
+reflecting a credit of:
+
+## **TOTAL CREDIT DEMANDED: ${{ result.total_recoverable }}**
+
+Please provide the corrected statement, or itemized substantiation for each disputed
+charge, within **{{ legal.cure_period_days }} days** of the date of this letter.
+
+## Reservation of Rights
+
+{% for clause in legal.reservation_clauses -%}
+- {{ clause }}
+{% endfor %}
+
+{% if audit_trail -%}
+## Evidence Appendix — Mathematical Lineage
+
+Each disputed amount below is reproducible from the source documents using the stated
+formula. Match confidence reflects how the invoice line was paired with its contract
+counterpart.
+
+{% for f in findings %}
+{% set entry = audit_trail.get(f.item_code) %}
+{% if entry -%}
+**{{ f.item_code }} — {{ f.description }}**
+- Match: {{ entry.match_method }} ({{ entry.match_confidence }}% confidence) — {{ entry.matched_on }}
+- Formula: `{{ entry.variance_formula }}`
+{% if entry.pct_formula -%}
+- Percentage: `{{ entry.pct_formula }}`
+{% endif -%}
+- Classification: `{{ entry.severity_rule }}`
+- Contract provision: {{ entry.contract_clause or "—" }}
+
+{% endif %}
+{% endfor %}
+{% endif %}
+---
+
+*{{ legal.counsel_disclaimer }}*
+
+Sincerely,
+
+_________________________
+Authorized Representative

@@ -1,0 +1,11 @@
+Item Code,Category,Description,Billed Rate,Quantity,Billed Amount,Period Start,Period End,Invoice Ref
+CAM-001,Grounds,Landscaping Services,1000.00,1,1000.00,2026-01-01,2026-12-31,INV-2026-0142
+CAM-002,Administration,Property Management Admin Fee,1250.00,1,1250.00,2026-01-01,2026-12-31,INV-2026-0142
+CAM-003,Security,Security Patrol Services,2600.00,1,2600.00,2026-01-01,2026-12-31,INV-2026-0142
+CAM-004,Grounds,Snow Removal,203.00,4,812.00,2026-01-01,2026-12-31,INV-2026-0142
+CAM-005,Janitorial,Common Area Janitorial,1800.00,1,1800.00,2026-01-01,2026-12-31,INV-2026-0142
+CAM-006,Maintenance,Elevator Maintenance,652.50,1,652.50,2026-01-01,2026-12-31,INV-2026-0142
+CAM-007,Maintenance,Parking Lot Maintenance,1200.00,1,1200.00,2026-01-01,2026-12-31,INV-2026-0142
+CAM-008,Insurance,Property Insurance Allocation,3450.00,1,3450.00,2026-01-01,2026-12-31,INV-2026-0142
+CAM-009,Utilities,Common Area Trash Removal,500.00,1,500.00,2026-01-01,2026-12-31,INV-2026-0142
+CAM-099,Capital,Capital Improvement Surcharge,750.00,1,750.00,2026-01-01,2026-12-31,INV-2026-0142

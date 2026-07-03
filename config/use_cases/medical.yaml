@@ -1,0 +1,38 @@
+# Medical Claims vs. Provider Bills audit profile (starter — tune columns to your payer/provider format)
+use_case: medical
+display_name: "Medical Claim vs. Provider Bill"
+domain_label: "contracted/allowed medical charges"
+recipient_role: "Provider Billing Office"
+response_deadline_days: 30
+dispute_template: dispute_letter.md.j2
+
+match_keys:
+  - item_code
+
+tolerance:
+  pct_tolerance: "0.00"
+  abs_tolerance: "1.00"
+  review_band_multiplier: "3"
+
+contract_columns:
+  "CPT Code": item_code
+  "Service Category": category
+  "Description": description
+  "Allowed Rate": agreed_rate
+  "Units": quantity
+  "Allowed Amount": agreed_amount
+  "Out-of-Pocket Cap": cap_amount
+  "Service Start": billing_period_start
+  "Service End": billing_period_end
+  "Plan Provision": contract_clause
+
+invoice_columns:
+  "CPT Code": item_code
+  "Service Category": category
+  "Description": description
+  "Billed Rate": billed_rate
+  "Units": quantity
+  "Billed Amount": billed_amount
+  "Service Start": billing_period_start
+  "Service End": billing_period_end
+  "Claim Number": invoice_ref

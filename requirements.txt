@@ -1,0 +1,25 @@
+# ── Core validation & settings ─────────────────────────────
+pydantic==2.9.2            # Strict data validation (v2 engine)
+pydantic-settings==2.5.2   # Typed .env / settings management
+python-dotenv==1.0.1       # .env file loading
+
+# ── Document ingestion ─────────────────────────────────────
+pandas==2.2.3              # Tabular data handling (CSV/Excel)
+openpyxl==3.1.5            # Read/write .xlsx
+xlsxwriter==3.2.0          # Rich Excel report output
+pdfplumber==0.11.4         # PDF text + table extraction
+pypdf==5.0.1               # PDF metadata / page utilities
+
+# ── Configuration & templating ─────────────────────────────
+PyYAML==6.0.2              # Use-case profiles (config/use_cases/*.yaml)
+Jinja2==3.1.4              # Dispute-letter templates
+
+# ── Utilities ──────────────────────────────────────────────
+python-dateutil==2.9.0.post0  # Robust date parsing (billing periods)
+rich==13.9.2               # Clean console output for audit summaries
+typer==0.12.5              # CLI framework for main.py
+click==8.1.7               # Pinned: click 8.2+ breaks typer 0.12.x option parsing
+
+# ── Dev / quality ──────────────────────────────────────────
+pytest==8.3.3              # Test runner
+ruff==0.6.9                # Linter + formatter

@@ -1,0 +1,61 @@
+# Jurisdiction-specific legal language for dispute letters.
+# Add a state by adding a block — no code changes required. Unknown codes fall
+# back to DEFAULT. References are intentionally general (no fabricated section
+# numbers); the counsel_disclaimer is always embedded in the letter.
+
+DEFAULT:
+  display_name: "General (no specific jurisdiction)"
+  legal_header: "NOTICE OF BILLING DISPUTE AND DEMAND FOR CURE"
+  statutory_reference: >-
+    the governing agreement and applicable state commercial and contract law,
+    including the duty of good faith and fair dealing
+  cure_period_days: 30
+  reservation_clauses:
+    - "All rights and remedies available at law and in equity are expressly reserved."
+    - "Payment of any undisputed amount shall not constitute waiver of any disputed amount, nor acquiescence to the billing methodology employed."
+
+CA:
+  display_name: "California"
+  legal_header: "NOTICE OF BILLING DISPUTE AND DEMAND FOR CURE (CALIFORNIA)"
+  statutory_reference: >-
+    the governing agreement and applicable California law, including the
+    California Commercial Code and the covenant of good faith and fair dealing
+    implied in every contract under California law
+  cure_period_days: 30
+  reservation_clauses:
+    - "All rights and remedies available under California law and in equity are expressly reserved."
+    - "Payment of any undisputed amount shall not constitute waiver of any disputed amount under California law."
+    - "This notice is provided without prejudice to any right to recover audit costs where the governing agreement so provides."
+
+NY:
+  display_name: "New York"
+  legal_header: "NOTICE OF BILLING DISPUTE AND DEMAND FOR CURE (NEW YORK)"
+  statutory_reference: >-
+    the governing agreement and applicable New York law, including the New York
+    Uniform Commercial Code and General Obligations Law
+  cure_period_days: 30
+  reservation_clauses:
+    - "All rights and remedies available under New York law and in equity are expressly reserved."
+    - "Payment of any undisputed amount shall not constitute an account stated or waiver of any disputed amount."
+
+TX:
+  display_name: "Texas"
+  legal_header: "NOTICE OF BILLING DISPUTE AND DEMAND FOR CURE (TEXAS)"
+  statutory_reference: >-
+    the governing agreement and applicable Texas law, including the Texas
+    Business and Commerce Code
+  cure_period_days: 30
+  reservation_clauses:
+    - "All rights and remedies available under Texas law and in equity are expressly reserved."
+    - "Payment of any undisputed amount shall not constitute waiver of any disputed amount under Texas law."
+
+IL:
+  display_name: "Illinois"
+  legal_header: "NOTICE OF BILLING DISPUTE AND DEMAND FOR CURE (ILLINOIS)"
+  statutory_reference: >-
+    the governing agreement and applicable Illinois law, including the Illinois
+    Uniform Commercial Code
+  cure_period_days: 30
+  reservation_clauses:
+    - "All rights and remedies available under Illinois law and in equity are expressly reserved."
+    - "Payment of any undisputed amount shall not constitute waiver of any disputed amount under Illinois law."

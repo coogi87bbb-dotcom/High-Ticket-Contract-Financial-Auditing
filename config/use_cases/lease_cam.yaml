@@ -1,0 +1,46 @@
+# Commercial Lease vs. CAM (Common Area Maintenance) Reconciliation audit profile
+use_case: lease_cam
+display_name: "Commercial Lease vs. CAM Reconciliation"
+domain_label: "Common Area Maintenance (CAM) charges"
+recipient_role: "Landlord / Property Manager"
+response_deadline_days: 30
+dispute_template: dispute_letter.md.j2
+
+# How contract lines are paired with invoice lines
+match_keys:
+  - item_code
+
+# Fallback: pair by description similarity (token-sort ratio, 0-100) when the
+# key match fails. Quoted so it parses as an exact Decimal.
+fuzzy_threshold: "85"
+
+# Variance tolerance: flag only when BOTH thresholds are exceeded.
+# Values are strings so they parse as exact Decimals, never floats.
+tolerance:
+  pct_tolerance: "0.50"        # percent
+  abs_tolerance: "5.00"        # dollars
+  review_band_multiplier: "3"  # beyond 3x tolerance -> DISPUTE
+
+# Source spreadsheet/PDF header -> internal model field
+contract_columns:
+  "Item Code": item_code
+  "Expense Category": category
+  "Description": description
+  "Agreed Rate": agreed_rate
+  "Quantity": quantity
+  "Agreed Amount": agreed_amount
+  "Annual Cap": cap_amount
+  "Period Start": billing_period_start
+  "Period End": billing_period_end
+  "Lease Clause": contract_clause
+
+invoice_columns:
+  "Item Code": item_code
+  "Category": category
+  "Description": description
+  "Billed Rate": billed_rate
+  "Quantity": quantity
+  "Billed Amount": billed_amount
+  "Period Start": billing_period_start
+  "Period End": billing_period_end
+  "Invoice Ref": invoice_ref
