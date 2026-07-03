@@ -1,0 +1,10 @@
+CPT Code,Service Category,Description,Allowed Rate,Units,Allowed Amount,Out-of-Pocket Cap,Service Start,Service End,Plan Provision
+99213,Office Visit,"Office Visit, Established Patient, Level 3",125.00,1,125.00,,2026-03-15,2026-03-15,Plan Sec. 5.1(a)
+80053,Laboratory,Comprehensive Metabolic Panel,14.50,1,14.50,,2026-03-15,2026-03-15,Plan Sec. 6.2 Lab Fee Schedule
+85025,Laboratory,CBC with Differential,10.75,1,10.75,,2026-03-15,2026-03-15,Plan Sec. 6.2 Lab Fee Schedule
+71046,Radiology,"Chest X-Ray, 2 Views",42.00,1,42.00,,2026-03-15,2026-03-15,Plan Sec. 6.4 Imaging Schedule
+29881,Surgery,"Knee Arthroscopy with Meniscectomy",3500.00,1,3500.00,4000.00,2026-03-15,2026-03-15,Plan Sec. 7.3 Surgical Allowance
+97110,Physical Therapy,"Therapeutic Exercise, per 15 min",35.00,4,140.00,,2026-03-15,2026-03-15,Plan Sec. 8.1 Therapy Schedule
+J1885,Pharmacy,"Ketorolac Injection, 15mg",15.00,1,15.00,,2026-03-15,2026-03-15,Plan Sec. 6.6 Drug Fee Schedule
+36415,Laboratory,Routine Venipuncture,8.00,1,8.00,,2026-03-15,2026-03-15,Plan Sec. 6.2 Lab Fee Schedule
+93000,Cardiology,"Electrocardiogram, Complete",25.00,1,25.00,,2026-03-15,2026-03-15,Plan Sec. 6.5 Diagnostic Schedule

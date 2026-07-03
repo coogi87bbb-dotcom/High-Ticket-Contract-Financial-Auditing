@@ -1,0 +1,52 @@
+# Insurance Fee Schedule — the contract baseline for medical bill audits.
+# All monetary values are QUOTED so they parse as exact Decimals, never floats.
+# Rev Code 0250 carries a $100.00 global cap: total sterile-supply billing per
+# visit may not exceed it, no matter how many 0250 lines the hospital submits.
+document_type: insurance_fee_schedule
+payer: Sample Health Plan
+plan_id: SHP-2026-PPO
+
+line_items:
+  - CPT Code: "99214"
+    Service Category: "Evaluation & Management"
+    Description: "Office/Outpatient Visit, Established Patient, Level 4"
+    Allowed Rate: "150.00"
+    Units: "1"
+    Allowed Amount: "150.00"
+    Out-of-Pocket Cap: ""
+    Service Start: "2026-03-12"
+    Service End: "2026-03-12"
+    Plan Provision: "Plan Sec. 5.1(a) E&M Fee Schedule"
+
+  - CPT Code: "36415"
+    Service Category: "Laboratory"
+    Description: "Routine Venipuncture (Blood Draw)"
+    Allowed Rate: "25.00"
+    Units: "1"
+    Allowed Amount: "25.00"
+    Out-of-Pocket Cap: ""
+    Service Start: "2026-03-12"
+    Service End: "2026-03-12"
+    Plan Provision: "Plan Sec. 6.2 Lab Fee Schedule"
+
+  - CPT Code: "85025"
+    Service Category: "Laboratory"
+    Description: "Complete Blood Count (CBC) with Differential"
+    Allowed Rate: "40.00"
+    Units: "1"
+    Allowed Amount: "40.00"
+    Out-of-Pocket Cap: ""
+    Service Start: "2026-03-12"
+    Service End: "2026-03-12"
+    Plan Provision: "Plan Sec. 6.2 Lab Fee Schedule"
+
+  - CPT Code: "0250"
+    Service Category: "Supplies"
+    Description: "Generic Sterile Supplies (Rev Code 0250)"
+    Allowed Rate: "50.00"
+    Units: "1"
+    Allowed Amount: "50.00"
+    Out-of-Pocket Cap: "100.00"
+    Service Start: "2026-03-12"
+    Service End: "2026-03-12"
+    Plan Provision: "Plan Sec. 9.4 Supplies Rider — aggregate supplies capped at $100.00 per visit"

@@ -77,6 +77,10 @@ class LineItemMatcher:
     def _key(self, item: ContractLineItem | InvoiceLineItem) -> tuple[str, ...]:
         return tuple(_normalize(str(getattr(item, k, ""))) for k in self.match_keys)
 
+    def key_for(self, item: ContractLineItem | InvoiceLineItem) -> tuple[str, ...]:
+        """Public match key, used by the engine for duplicate-billing detection."""
+        return self._key(item)
+
     @staticmethod
     def _periods_overlap(c: ContractLineItem, i: InvoiceLineItem) -> bool:
         return (

@@ -206,6 +206,8 @@ class VarianceFinding(BaseModel):
     cap_breached: bool = False
     severity: Severity
     explanation: str
+    # Key of this finding's entry in AuditResult.audit_trail (set by the engine).
+    trail_key: str | None = None
 
 
 class AuditResult(BaseModel):

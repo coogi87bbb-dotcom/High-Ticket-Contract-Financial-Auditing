@@ -9,12 +9,15 @@ from ingestion.base import BaseIngestor
 from ingestion.csv_ingestor import CsvIngestor
 from ingestion.excel_ingestor import ExcelIngestor
 from ingestion.pdf_ingestor import PdfIngestor
+from ingestion.yaml_ingestor import YamlIngestor
 
 _REGISTRY: dict[str, type[BaseIngestor]] = {
     ".csv": CsvIngestor,
     ".xlsx": ExcelIngestor,
     ".xls": ExcelIngestor,
     ".pdf": PdfIngestor,
+    ".yaml": YamlIngestor,
+    ".yml": YamlIngestor,
 }
 
 

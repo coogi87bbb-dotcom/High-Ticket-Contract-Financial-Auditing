@@ -60,7 +60,7 @@ formula. Match confidence reflects how the invoice line was paired with its cont
 counterpart.
 
 {% for f in findings %}
-{% set entry = audit_trail.get(f.item_code) %}
+{% set entry = audit_trail.get(f.trail_key or f.item_code) %}
 {% if entry -%}
 **{{ f.item_code }} — {{ f.description }}**
 - Match: {{ entry.match_method }} ({{ entry.match_confidence }}% confidence) — {{ entry.matched_on }}

@@ -18,8 +18,14 @@ from __future__ import annotations
 from decimal import Decimal, ROUND_HALF_UP
 
 from analyzer.matcher import MatchedPair
-from config.models import CENTS, Severity, ToleranceProfile, VarianceFinding
-from config.schemas import AuditTrailEntry
+from config.models import (
+    CENTS,
+    InvoiceLineItem,
+    Severity,
+    ToleranceProfile,
+    VarianceFinding,
+)
+from config.schemas import AuditTrailEntry, MatchMethod
 
 _PCT_PLACES = Decimal("0.01")
 _ONE = Decimal("1")
@@ -141,6 +147,86 @@ class VarianceCalculator:
                 "abs_tolerance": str(self.tolerance.abs_tolerance),
                 "pct_tolerance": str(self.tolerance.pct_tolerance),
                 "review_band_multiplier": str(mult),
+            },
+            contract_clause=pair.contract.contract_clause,
+        )
+        return finding, trail
+
+    def flag_duplicate(
+        self,
+        pair: MatchedPair,
+        duplicate: InvoiceLineItem,
+        aggregate_billed: Decimal,
+        total_lines: int,
+    ) -> tuple[VarianceFinding, AuditTrailEntry]:
+        """Flag a re-billed code (duplicate/unbundled charge) as dispute-grade.
+
+        `pair` is the line that legitimately matched the contract; `duplicate` is an
+        additional invoice line under the same code with no separate contractual
+        basis, so its full amount is recoverable. If the contract line carries a cap,
+        the AGGREGATE billed across all lines under the code is tested against it.
+        """
+        billed = duplicate.billed_amount
+        cap = pair.contract.cap_amount
+        cap_breached = cap is not None and aggregate_billed > cap
+
+        explanation = (
+            f"Duplicate/unbundled billing: code {duplicate.item_code} was already "
+            f"billed and matched to the fee schedule on this statement; this "
+            f"additional line of {billed} has no separate contractual basis."
+        )
+        if cap_breached:
+            overage = (aggregate_billed - cap).quantize(CENTS, rounding=ROUND_HALF_UP)  # type: ignore[operator]
+            explanation += (
+                f" Aggregate billed under this code is {aggregate_billed}, exceeding "
+                f"the global cap of {cap} by {overage}."
+            )
+            severity_rule = (
+                f"RULE duplicate_unbundled: {total_lines} lines billed under code "
+                f"{duplicate.item_code}; aggregate {aggregate_billed} > global cap "
+                f"{cap} (overage {overage}) -> DISPUTE"
+            )
+        else:
+            severity_rule = (
+                f"RULE duplicate_unbundled: {total_lines} lines billed under code "
+                f"{duplicate.item_code} but only one contracted line exists "
+                f"(aggregate {aggregate_billed}) -> DISPUTE"
+            )
+
+        finding = VarianceFinding(
+            item_code=duplicate.item_code,
+            description=duplicate.description,
+            contract_clause=pair.contract.contract_clause,
+            invoice_ref=duplicate.invoice_ref,
+            agreed_amount=Decimal("0.00"),
+            billed_amount=billed,
+            variance_amount=billed,
+            variance_pct=None,
+            cap_breached=cap_breached,
+            severity=Severity.DISPUTE,
+            explanation=explanation,
+        )
+        trail = AuditTrailEntry(
+            item_code=duplicate.item_code,
+            invoice_ref=duplicate.invoice_ref,
+            match_method=MatchMethod.DUPLICATE_KEY,
+            match_confidence=Decimal("100.00"),
+            matched_on=(
+                f"item_code '{duplicate.item_code}' duplicates a fee-schedule line "
+                f"already matched on this statement ({total_lines} lines total)"
+            ),
+            raw_contract_row=dict(pair.contract.raw_source),
+            raw_invoice_row=dict(duplicate.raw_source),
+            variance_formula=(
+                f"variance_amount = billed_amount (no additional contractual "
+                f"entitlement) = {billed}"
+            ),
+            pct_formula=None,
+            severity_rule=severity_rule,
+            tolerance_applied={
+                "abs_tolerance": str(self.tolerance.abs_tolerance),
+                "pct_tolerance": str(self.tolerance.pct_tolerance),
+                "review_band_multiplier": str(self.tolerance.review_band_multiplier),
             },
             contract_clause=pair.contract.contract_clause,
         )

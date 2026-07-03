@@ -19,6 +19,7 @@ from pydantic import BaseModel, ConfigDict, Field
 class MatchMethod(StrEnum):
     EXACT_KEY = "EXACT_KEY"  # matched on the configured key(s), e.g. item_code
     FUZZY_DESCRIPTION = "FUZZY_DESCRIPTION"  # token-sort similarity above threshold
+    DUPLICATE_KEY = "DUPLICATE_KEY"  # re-billing of a code already matched (unbundling)
 
 
 class AuditTrailEntry(BaseModel):

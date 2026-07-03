@@ -11,7 +11,7 @@
 4. Corporate Expense Policies vs. Employee Receipts
 5. Medical Claims vs. Provider Bills
 
-**Build status:** `V2 COMPLETE — audit trail + fuzzy matching + regional legal reporter live, 49/49 tests passing, ruff clean`
+**Build status:** `V2.1 COMPLETE — medical vertical hardened (upcoding, overcharge, duplicate/unbundling detection), 58/58 tests passing, ruff clean`
 
 **Active tasks:**
 - [x] Phase 1: CLAUDE.md project memory initialized
@@ -25,6 +25,7 @@
 - [x] V2 Upgrade 1 — Audit Trail Guarantee: immutable `AuditResult.audit_trail` (config/schemas.py) with exact formulas, raw pre-Decimal source values, contract clause, match confidence; rendered as the letter's Evidence Appendix + a 4th Excel sheet
 - [x] V2 Upgrade 2 — Semantic fuzzy matching: token-sort similarity fallback (difflib, zero deps, deterministic) with per-use-case `fuzzy_threshold` in YAML (default 85)
 - [x] V2 Upgrade 3 — Regional Legal Reporter: `reporter/generator.py` (replaces dispute_generator.py) pulls jurisdiction language from `config/legal/jurisdictions.yaml` (DEFAULT/CA/NY/TX/IL); CLI takes `--jurisdiction CA`; unknown codes fall back to DEFAULT; every letter embeds a counsel-review disclaimer
+- [x] V2.1 — Medical vertical hardening: YAML policy ingestion (`ingestion/yaml_ingestor.py`, rejects unquoted floats); engine Pass-3 duplicate/unbundling detection (`VarianceCalculator.flag_duplicate`, `MatchMethod.DUPLICATE_KEY`) testing AGGREGATE billing vs a code's global cap; `VarianceFinding.trail_key` links findings to their trail entries. Verified on `data/input/medical_policy.yaml` vs `data/input/hospital_bill_messy.csv`: caught upcoding (99215→99214 via 98.04% fuzzy match, $200), straight overcharge (85025, $80), and 3x-billed Rev 0250 supplies breaching the $100 global cap ($115) = **$395.00 recovered**; junk TOTAL row rejected cleanly
 
 **Next milestones (not started):**
 - Real-document hardening: test PDF ingestion against an actual CAM statement/freight bill

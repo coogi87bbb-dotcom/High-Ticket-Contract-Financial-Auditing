@@ -20,6 +20,7 @@ from config.models import (
     ErrorModel,
     InvoiceLineItem,
     Severity,
+    VarianceFinding,
 )
 from config.tolerances import UseCaseProfile
 from ingestion.base import IngestResult, LineItem
@@ -83,22 +84,56 @@ class AuditEngine:
                 i for i in invoice.line_items if isinstance(i, InvoiceLineItem)
             ]
 
-            matched = LineItemMatcher(
+            matcher = LineItemMatcher(
                 self.profile.match_keys, fuzzy_threshold=self.profile.fuzzy_threshold
-            ).match(contract_items, invoice_items)
+            )
+            matched = matcher.match(contract_items, invoice_items)
             result.unmatched_contract_items = matched.unmatched_contract
-            result.unmatched_invoice_items = matched.unmatched_invoice
+
+            # Pass 3: duplicate/unbundled billing — unmatched invoice lines that
+            # re-use a code already matched to the contract have no separate
+            # contractual basis; group them so aggregates can be tested vs caps.
+            pair_by_key: dict[tuple[str, ...], object] = {}
+            for pair in matched.pairs:
+                pair_by_key.setdefault(matcher.key_for(pair.contract), pair)
+            duplicate_groups: dict[tuple[str, ...], list[InvoiceLineItem]] = {}
+            leftover_invoice: list[InvoiceLineItem] = []
+            for item in matched.unmatched_invoice:
+                item_key = matcher.key_for(item)
+                if item_key in pair_by_key:
+                    duplicate_groups.setdefault(item_key, []).append(item)
+                else:
+                    leftover_invoice.append(item)
+            result.unmatched_invoice_items = leftover_invoice
 
             calculator = VarianceCalculator(context.tolerance_profile)
-            for pair in matched.pairs:
-                finding, trail_entry = calculator.calculate_with_trail(pair)
-                result.findings.append(finding)
+
+            def store(finding: VarianceFinding, trail_entry: object) -> None:
                 # Collision-safe key: duplicate item codes get #2, #3, ... suffixes.
                 key, n = finding.item_code, 2
                 while key in result.audit_trail:
                     key = f"{finding.item_code}#{n}"
                     n += 1
-                result.audit_trail[key] = trail_entry
+                result.findings.append(finding.model_copy(update={"trail_key": key}))
+                result.audit_trail[key] = trail_entry  # type: ignore[assignment]
+
+            for pair in matched.pairs:
+                store(*calculator.calculate_with_trail(pair))
+            for item_key, dupes in duplicate_groups.items():
+                pair = pair_by_key[item_key]
+                aggregate = (
+                    pair.invoice.billed_amount  # type: ignore[attr-defined]
+                    + sum((d.billed_amount for d in dupes), Decimal("0"))
+                ).quantize(CENTS, rounding=ROUND_HALF_UP)
+                for dup in dupes:
+                    store(
+                        *calculator.flag_duplicate(
+                            pair,  # type: ignore[arg-type]
+                            dup,
+                            aggregate_billed=aggregate,
+                            total_lines=len(dupes) + 1,
+                        )
+                    )
 
             result.total_agreed = sum(
                 (i.agreed_amount for i in contract_items), Decimal("0")
