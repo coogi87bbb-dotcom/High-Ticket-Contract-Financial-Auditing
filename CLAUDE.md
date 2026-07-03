@@ -11,7 +11,7 @@
 4. Corporate Expense Policies vs. Employee Receipts
 5. Medical Claims vs. Provider Bills
 
-**Build status:** `V2.1 COMPLETE — medical vertical hardened (upcoding, overcharge, duplicate/unbundling detection), 58/58 tests passing, ruff clean`
+**Build status:** `V3 COMPLETE — password-protected web app live-ready (FastAPI), 68/68 tests passing, ruff clean`
 
 **Active tasks:**
 - [x] Phase 1: CLAUDE.md project memory initialized
@@ -25,6 +25,7 @@
 - [x] V2 Upgrade 1 — Audit Trail Guarantee: immutable `AuditResult.audit_trail` (config/schemas.py) with exact formulas, raw pre-Decimal source values, contract clause, match confidence; rendered as the letter's Evidence Appendix + a 4th Excel sheet
 - [x] V2 Upgrade 2 — Semantic fuzzy matching: token-sort similarity fallback (difflib, zero deps, deterministic) with per-use-case `fuzzy_threshold` in YAML (default 85)
 - [x] V2 Upgrade 3 — Regional Legal Reporter: `reporter/generator.py` (replaces dispute_generator.py) pulls jurisdiction language from `config/legal/jurisdictions.yaml` (DEFAULT/CA/NY/TX/IL); CLI takes `--jurisdiction CA`; unknown codes fall back to DEFAULT; every letter embeds a counsel-review disclaimer
+- [x] V3 — Go-live web layer: `web/app.py` (FastAPI) wraps the engine untouched — HTTP Basic auth vs `APP_PASSWORD` env (refuses ALL requests if unset), upload form (use-case + jurisdiction dropdowns), results page, Excel/letter downloads with path-traversal-safe IDs, 10MB upload cap, zero-exception error pages. Deploy: `render.yaml` (Render free tier, Blueprint) or `Dockerfile` (Google Cloud Run). Local dev: `APP_PASSWORD=x .venv/bin/uvicorn web.app:app --reload --port 8000`. Free-tier caveats: app sleeps when idle (~30-60s wake), storage ephemeral (download results immediately). NOTE: Vercel is a poor fit for this Python/pandas/pdfplumber stack (bundle + 4.5MB body limits); Firebase Hosting alone can't run Python — use Render (simplest, no card) or Cloud Run (founder's Google account, needs billing enabled).
 - [x] V2.1 — Medical vertical hardening: YAML policy ingestion (`ingestion/yaml_ingestor.py`, rejects unquoted floats); engine Pass-3 duplicate/unbundling detection (`VarianceCalculator.flag_duplicate`, `MatchMethod.DUPLICATE_KEY`) testing AGGREGATE billing vs a code's global cap; `VarianceFinding.trail_key` links findings to their trail entries. Verified on `data/input/medical_policy.yaml` vs `data/input/hospital_bill_messy.csv`: caught upcoding (99215→99214 via 98.04% fuzzy match, $200), straight overcharge (85025, $80), and 3x-billed Rev 0250 supplies breaching the $100 global cap ($115) = **$395.00 recovered**; junk TOTAL row rejected cleanly
 
 **Next milestones (not started):**

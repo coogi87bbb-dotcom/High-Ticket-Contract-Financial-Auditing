@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Audit could not run</title>
+  <style>
+    body { font-family: -apple-system, "Segoe UI", Roboto, sans-serif; background: #f4f6f9; margin: 0; color: #1e293b; }
+    .wrap { max-width: 620px; margin: 3rem auto; padding: 0 1rem; }
+    .card { background: #fff; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 12px rgba(15,23,42,.08); border-top: 4px solid #dc2626; }
+    h1 { font-size: 1.2rem; margin: 0 0 .5rem; }
+    p { color: #475569; }
+    a { color: #1d4ed8; text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>✖ {{ message }}</h1>
+      {% if detail %}<p>{{ detail }}</p>{% endif %}
+      <p><a href="/">← Back to the audit form</a></p>
+    </div>
+  </div>
+</body>
+</html>

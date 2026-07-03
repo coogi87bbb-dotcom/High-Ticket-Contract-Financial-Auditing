@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Audit {{ audit_id }} — Results</title>
+  <style>
+    body { font-family: -apple-system, "Segoe UI", Roboto, sans-serif; background: #f4f6f9; margin: 0; color: #1e293b; }
+    .wrap { max-width: 960px; margin: 2.5rem auto; padding: 0 1rem; }
+    .card { background: #fff; border-radius: 12px; padding: 1.6rem 2rem; box-shadow: 0 2px 12px rgba(15,23,42,.08); margin-bottom: 1.2rem; }
+    h1 { font-size: 1.25rem; margin: 0 0 .2rem; }
+    .sub { color: #64748b; margin-top: 0; }
+    .totals { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .stat { flex: 1 1 160px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: .9rem 1.1rem; }
+    .stat .label { color: #64748b; font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+    .stat .value { font-size: 1.35rem; font-weight: 700; margin-top: .2rem; }
+    .stat.recover .value { color: #b91c1c; }
+    table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+    th, td { text-align: left; padding: .55rem .6rem; border-bottom: 1px solid #e2e8f0; }
+    th { color: #64748b; font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; }
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .badge { display: inline-block; padding: .18rem .55rem; border-radius: 999px; font-size: .75rem; font-weight: 700; }
+    .badge.ok { background: #dcfce7; color: #166534; }
+    .badge.review { background: #fef9c3; color: #854d0e; }
+    .badge.dispute { background: #fee2e2; color: #991b1b; }
+    .warn { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 8px; padding: .7rem 1rem; margin: .5rem 0; font-size: .92rem; }
+    .err { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: .7rem 1rem; margin: .5rem 0; font-size: .92rem; }
+    .actions a { display: inline-block; margin-right: .8rem; margin-top: .4rem; padding: .6rem 1.1rem; border-radius: 8px; background: #1d4ed8; color: #fff; text-decoration: none; font-weight: 600; font-size: .95rem; }
+    .actions a.secondary { background: #475569; }
+    .back { color: #1d4ed8; text-decoration: none; font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Audit {{ audit_id }} — {{ profile.display_name }}</h1>
+      <p class="sub">Jurisdiction: {{ jurisdiction }} · {{ result.findings | length }} matched line(s) audited</p>
+      <div class="totals">
+        <div class="stat"><div class="label">Total agreed</div><div class="value">${{ result.total_agreed }}</div></div>
+        <div class="stat"><div class="label">Total billed</div><div class="value">${{ result.total_billed }}</div></div>
+        <div class="stat recover"><div class="label">Recoverable (dispute-grade)</div><div class="value">${{ result.total_recoverable }}</div></div>
+      </div>
+      <div class="actions">
+        {% if excel_ready %}<a href="/download/{{ audit_id }}/excel">⬇ Excel evidence workbook</a>{% endif %}
+        {% if letter_ready %}<a class="secondary" href="/download/{{ audit_id }}/letter">⬇ Dispute letter</a>{% endif %}
+        {% if letter_skipped %}<span class="badge ok">No dispute-grade findings — no letter needed</span>{% endif %}
+      </div>
+    </div>
+
+    <div class="card">
+      <h1>Findings</h1>
+      <table>
+        <tr><th>Item</th><th>Description</th><th class="num">Agreed</th><th class="num">Billed</th><th class="num">Variance</th><th>Severity</th></tr>
+        {% for f in result.findings %}
+        <tr>
+          <td>{{ f.item_code }}</td>
+          <td>{{ f.description }}</td>
+          <td class="num">${{ f.agreed_amount }}</td>
+          <td class="num">${{ f.billed_amount }}</td>
+          <td class="num">${{ f.variance_amount }}</td>
+          <td>
+            {% if f.severity == "DISPUTE" %}<span class="badge dispute">DISPUTE</span>
+            {% elif f.severity == "REVIEW" %}<span class="badge review">REVIEW</span>
+            {% else %}<span class="badge ok">OK</span>{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+
+      {% for item in result.unmatched_invoice_items %}
+      <div class="warn">⚠ <strong>Charge with no contractual basis:</strong> {{ item.item_code }} — {{ item.description }} (${{ item.billed_amount }})</div>
+      {% endfor %}
+      {% for item in result.unmatched_contract_items %}
+      <div class="warn">ℹ Contract item never billed: {{ item.item_code }} — {{ item.description }}</div>
+      {% endfor %}
+      {% for e in result.errors %}
+      <div class="err">✖ {{ e.message }}{% if e.detail %} — {{ e.detail }}{% endif %}</div>
+      {% endfor %}
+    </div>
+
+    <a class="back" href="/">← Run another audit</a>
+  </div>
+</body>
+</html>

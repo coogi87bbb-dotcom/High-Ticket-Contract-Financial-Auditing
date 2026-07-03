@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Variance Guard Engine</title>
+  <style>
+    :root { color-scheme: light; }
+    body { font-family: -apple-system, "Segoe UI", Roboto, sans-serif; background: #f4f6f9; margin: 0; color: #1e293b; }
+    .wrap { max-width: 620px; margin: 3rem auto; padding: 0 1rem; }
+    .card { background: #fff; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 12px rgba(15,23,42,.08); }
+    h1 { font-size: 1.35rem; margin: 0 0 .25rem; }
+    p.sub { color: #64748b; margin-top: 0; }
+    label { display: block; font-weight: 600; margin: 1.1rem 0 .35rem; font-size: .95rem; }
+    select, input[type=file] { width: 100%; padding: .55rem; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; font-size: .95rem; box-sizing: border-box; }
+    button { margin-top: 1.5rem; width: 100%; padding: .8rem; background: #1d4ed8; color: #fff; border: 0; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; }
+    button:hover { background: #1e40af; }
+    .hint { color: #94a3b8; font-size: .82rem; margin-top: .3rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>⚖️ Universal Financial Audit &amp; Variance Guard Engine</h1>
+      <p class="sub">Upload a contract and its invoice — get the variance audit, Excel evidence workbook, and dispute letter.</p>
+      <form action="/audit" method="post" enctype="multipart/form-data">
+        <label for="use_case">Audit type</label>
+        <select id="use_case" name="use_case" required>
+          {% for uc in use_cases %}
+          <option value="{{ uc }}">{{ uc.replace("_", " ") | title }}</option>
+          {% endfor %}
+        </select>
+
+        <label for="jurisdiction">Legal jurisdiction (for the dispute letter)</label>
+        <select id="jurisdiction" name="jurisdiction">
+          {% for j in jurisdictions %}
+          <option value="{{ j }}" {% if j == "DEFAULT" %}selected{% endif %}>{{ j }}</option>
+          {% endfor %}
+        </select>
+
+        <label for="contract">Contract / fee schedule / policy document</label>
+        <input id="contract" name="contract" type="file" required>
+        <div class="hint">Supported: {{ supported_types }} · max 10 MB</div>
+
+        <label for="invoice">Invoice / bill / statement</label>
+        <input id="invoice" name="invoice" type="file" required>
+        <div class="hint">Supported: {{ supported_types }} · max 10 MB</div>
+
+        <button type="submit">Run Audit</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

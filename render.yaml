@@ -1,0 +1,15 @@
+# Render Blueprint — free-tier deployment.
+# In the Render dashboard: New + -> Blueprint -> connect this GitHub repo.
+# You will be prompted to set APP_PASSWORD (kept secret, never in git).
+services:
+  - type: web
+    name: variance-guard-engine
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn web.app:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: APP_PASSWORD
+        sync: false
+      - key: PYTHON_VERSION
+        value: 3.12.1
